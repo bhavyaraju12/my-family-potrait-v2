@@ -155,6 +155,22 @@
 				</div>
 
 				
+				<label>Select Role</label>
+				<div id="user">
+				<div class="form-check" style="margin-bottom: 0px;">
+					<input class="form-check-input" type="radio" name="role" id="patient" value="patient" checked>
+					<label class="form-check-label" id="patient" for="patient">
+						Patient
+					</label>
+				</div>
+
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="role" id="doctor" value="doctor">
+					<label class="form-check-label" id="doctor" for="doctor">
+						Doctor
+					</label>
+				</div>
+			</div>
 
 				<label>First Name</label>
 				<input type="text" id="firstname" class="form-control " style="margin-bottom: 20px;" required="">
@@ -175,6 +191,18 @@
 				<input type="password" id="confirmpassword"  class="form-control " style="margin-bottom: 20px;" required="">
 				</div>
 				</div>
+
+
+				<div id="doctorFields" style="display:none;">
+					<label>Years of Experience</label>
+					<input type="text" id="experience" class="form-control" style="margin-bottom: 20px;">
+					<label>Specialization</label>
+					<input type="text" id="specialization" class="form-control" style="margin-bottom: 20px;">
+					<label>License Number</label>
+					<input type="text" id="license" class="form-control" style="margin-bottom: 20px;">
+				</div>
+
+
 				<div class="alert alert-success successBox">
 				<button type="button" class="close" onclick="showMsg(1);">×</button>
 				<strong style="font-size: 16px;">Congratulations!</strong><span class="alert-link"> You Have Successfully Registered.</span>
@@ -308,6 +336,31 @@
 
 	<!-- Java scripts -->
 	<script type="text/javascript" src="assets/plugins/jquery/jquery.min.js"></script>
+
+	<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var doctorRadio = document.getElementById('doctor');
+            var patientRadio = document.getElementById('patient');
+            var doctorFields = document.getElementById('doctorFields');
+
+            doctorRadio.addEventListener('change', function () {
+                if (this.checked) {
+                    doctorFields.style.display = 'block';
+                }
+            });
+
+            patientRadio.addEventListener('change', function () {
+                if (this.checked) {
+                    doctorFields.style.display = 'none';
+                }
+            });
+
+            // Initially hide the doctor fields
+            if (!doctorRadio.checked) {
+                doctorFields.style.display = 'none';
+            }
+        });
+    </script>
 
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="script1.js"></script>
