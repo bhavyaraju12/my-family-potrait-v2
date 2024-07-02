@@ -4,9 +4,9 @@ const database = supabase.createClient(url, key);
 
 console.log(database);
 
-const login_submit = document.getElementById("form_submit");
+const  form_submit= document.getElementById("form_submit");
 
-form_submit.addEventListener("submit", async (event) => {
+form_submit.addEventListener("submit", async (event) => { // Use login_submit here
     event.preventDefault();
 
     const email = document.getElementById("email").value;
@@ -20,19 +20,19 @@ form_submit.addEventListener("submit", async (event) => {
 
     try {
         // First, check the 'users' table
-        let { data, error } = await database
+        let { data: user, error: userError } = await database
             .from('users')
             .select()
             .eq('email', email)
             .single();
 
-        if (error) {
+        if (userError) {       
             // If there's an error in the query, log it and try the next table
-            console.error("Error checking users table:", error);
+            console.error("Error checking users table:", userError);
         }
 
         // If user is found and password matches
-        if (data && data.password === password) {
+        if (user && user.password === password) {
             alert("Login successful!");
             // Redirect to the dashboard or another page
             window.location.href = "dashboard.html";
@@ -40,21 +40,23 @@ form_submit.addEventListener("submit", async (event) => {
         }
 
         // If not found or password doesn't match, check the 'doctors' table
-        ({ data, error } = await database
+        let { data: doctor, error: doctorError } = await database
             .from('doctors')
             .select()
             .eq('email', email)
-            .single());
+            .single();
 
-        if (error) {
-            throw error;
+        if (doctorError) {
+            console.error("Error checking doctors table:", doctorError);
         }
 
         // If doctor is found and password matches
-        if (data && data.password === password) {
+        if (doctor && doctor.password === password) {
             alert("Login successful!");
+            const doctorId = doctor.d_id;
+            localStorage.setItem('doctorId', doctorId);
             // Redirect to the dashboard or another page
-            window.location.href = "dashboard.html";
+            window.location.href = "docdb.html";
         } else {
             alert("Invalid email or password.");
         }

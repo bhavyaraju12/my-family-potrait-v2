@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedigree Chart</title>
+    <style>
+        .container {
+            text-align: center;
+        }
+
+        .pedigree-chart {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px auto;
+        }
+
+        .person {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .line {
+            width: 2px;
+            height: 50px;
+            background-color: #ddd;
+            margin: 0 auto;
+        }
+
+        #relative-form {
+            margin-top: 20px;
+        }
+
+        .person-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .children, .siblings {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Pedigree Chart</h1>
+        <div class="pedigree-chart"></div>
+        <h2>Add Relatives</h2>
+        <form id="relative-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="relationship">Relationship:</label>
+            <select id="relationship" required>
+                <option value="father">Father</option>
+                <option value="mother">Mother</option>
+                <option value="paternal grandfather">Paternal Grandfather</option>
+                <option value="paternal grandmother">Paternal Grandmother</option>
+                <option value="maternal grandfather">Maternal Grandfather</option>
+                <option value="maternal grandmother">Maternal Grandmother</option>
+                <option value="sibling">Sibling</option>
+                <option value="child">Child</option>
+                <option value="spouse">Spouse</option>
+            </select>
+            <button type="submit">Add Relative</button>
+        </form>
+    </div>
+    <script>
+        const pedigreeChart = document.querySelector('.pedigree-chart');
+        const relativeForm = document.getElementById('relative-form');
+
+        const you = { name: 'You', children: [], parents: [], siblings: [], spouse: null, paternalGrandparents: [], maternalGrandparents: [] };
+
+        function generatePedigreeChart(person, parentElement) {
+            const personContainer = document.createElement('div');
+            personContainer.classList.add('person-container');
+
+            const personDiv = document.createElement('div');
+            personDiv.classList.add('person');
+            personDiv.textContent = person.name;
+            personContainer.appendChild(personDiv);
+
+            if (person.paternalGrandparents && person.paternalGrandparents.length > 0) {
+                const paternalGrandparentsContainer = document.createElement('div');
+                paternalGrandparentsContainer.classList.add('children');
+                for (const grandparent of person.paternalGrandparents) {
+                    generatePedigreeChart(grandparent, paternalGrandparentsContainer);
+                }
+                personContainer.appendChild(paternalGrandparentsContainer);
+            }
+
+            if (person.maternalGrandparents && person.maternalGrandparents.length > 0) {
+                const maternalGrandparentsContainer = document.createElement('div');
+                maternalGrandparentsContainer.classList.add('children');
+                for (const grandparent of person.maternalGrandparents) {
+                    generatePedigreeChart(grandparent, maternalGrandparentsContainer);
+                }
+                personContainer.appendChild(maternalGrandparentsContainer);
+            }
+
+            if (person.parents && person.parents.length > 0) {
+                const parentsContainer = document.createElement('div');
+                parentsContainer.classList.add('children');
+                for (const parent of person.parents) {
+                    generatePedigreeChart(parent, parentsContainer);
+                }
+                personContainer.appendChild(parentsContainer);
+            }
+
+            if (person.siblings && person.siblings.length > 0) {
+                const siblingsContainer = document.createElement('div');
+                siblingsContainer.classList.add('siblings');
+                for (const sibling of person.siblings) {
+                    generatePedigreeChart(sibling, siblingsContainer);
+                }
+                personContainer.appendChild(siblingsContainer);
+            }
+
+            if (person.spouse) {
+                const spouseContainer = document.createElement('div');
+                spouseContainer.classList.add('children');
+                generatePedigreeChart(person.spouse, spouseContainer);
+                personContainer.appendChild(spouseContainer);
+            }
+
+            if (person.children && person.children.length > 0) {
+                const line = document.createElement('div');
+                line.classList.add('line');
+                personContainer.appendChild(line);
+
+                const childrenContainer = document.createElement('div');
+                childrenContainer.classList.add('children');
+                for (const child of person.children) {
+                    generatePedigreeChart(child, childrenContainer);
+                }
+                personContainer.appendChild(childrenContainer);
+            }
+
+            parentElement.appendChild(personContainer);
+        }
+
+        generatePedigreeChart(you, pedigreeChart);
+
+        relativeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const relationship = document.getElementById('relationship').value.toLowerCase();
+            const newRelative = { name, children: [], parents: [], siblings: [], spouse: null, paternalGrandparents: [], maternalGrandparents: [] };
+
+            if (relationship === 'father' || relationship === 'mother') {
+                if (relationship === 'father') {
+                    you.parents.push(newRelative);
+                } else {
+                    you.parents.push(newRelative);
+                }
+                newRelative.children.push(you);
+            } else if (relationship === 'sibling') {
+                you.siblings.push(newRelative);
+                newRelative.siblings.push(you);
+            } else if (relationship === 'child') {
+                you.children.push(newRelative);
+                newRelative.parents.push(you);
+            } else if (relationship === 'spouse') {
+                you.spouse = newRelative;
+                newRelative.spouse = you;
+            } else if (relationship === 'paternal grandfather' || relationship === 'paternal grandmother') {
+                you.paternalGrandparents.push(newRelative);
+            } else if (relationship === 'maternal grandfather' || relationship === 'maternal grandmother') {
+                you.maternalGrandparents.push(newRelative);
+            } else {
+                alert('Invalid relationship.');
+                return;
+            }
+
+            document.getElementById('name').value = '';
+            document.getElementById('relationship').value = '';
+
+            pedigreeChart.innerHTML = '';
+            generatePedigreeChart(you, pedigreeChart);
+        });
+    </script>
+</body>
+</html>

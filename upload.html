@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 40vh;
+            margin: 0;
+            background-color: #f8f8f8;
+        }
+        .container {
+            text-align: center;
+            width: 50%;
+            max-width: 800px;
+            color: #72c02c;
+            font-size: 2rem;
+        }
+        .upload-container {
+            background-color: white;
+            border: 1px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+        .upload-container h2 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .upload-container p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #afacac;
+        }
+        .upload-container input[type="file"] {
+            display: none;
+        }
+        .upload-container label {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Test Result<p>
+        <div class="upload-container">
+            <h2>Upload Files</h2>
+            <p>Select File here</p>
+            <p>Files Supported: PDF, TEXT, DOC, DOCX</p>
+            <input type="file" id="fileUpload" accept=".pdf,.txt,.doc,.docx">
+            <label for="fileUpload">Choose File</label>
+        </div>
+    </div>
+</body>
+</html>
